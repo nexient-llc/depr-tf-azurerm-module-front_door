@@ -34,13 +34,56 @@ backend_pools = {
   }
 }
 forwarding_configurations = {
-    "dummy-backend-pool" = {
-      cache_duration = null
-      cache_enabled = false
-      cache_query_parameter_strip_directive = "StripAll"
-      cache_query_parameters = []
-      cache_use_dynamic_compression = false
-      custom_forwarding_path = ""
-      forwarding_protocol = "MatchRequest"
-    }
+  "dummy-backend-pool" = {
+    cache_duration = null
+    cache_enabled = false
+    cache_query_parameter_strip_directive = "StripAll"
+    cache_query_parameters = []
+    cache_use_dynamic_compression = false
+    custom_forwarding_path = ""
+    forwarding_protocol = "MatchRequest"
   }
+}
+
+frontend_endpoint_names = ["demo-eus-dev-000-fdep-000"]
+
+additional_routing_rules = {
+  "routing-rule-1" = {
+    accepted_protocols = [ "Http", "Https"]
+    enabled = false
+    forwarding_configuration = {
+      "dummy-backend-pool" = {
+        cache_duration = null
+        cache_enabled = false
+        cache_query_parameter_strip_directive = "StripAll"
+        cache_query_parameters = []
+        cache_use_dynamic_compression = false
+        custom_forwarding_path = ""
+        forwarding_protocol = "MatchRequest"
+      }
+    }
+    frontend_endpoint_names = ["demo-eus-dev-000-fdep-000"]
+    name = "routing-rule-1"
+    patterns_to_match = [ "/test" ]
+    redirect_configuration = null
+  }
+}
+
+frontend_endpoints = {
+  api-test2-vanillavc-com = {
+    create_record = false
+    endpoint_name = "api-test2-vanillavc-com"
+    record_name = "api-test2.vanillavc.com"
+    record_type = "CNAME"
+    dns_zone = null
+    dns_rg = null
+  }
+  api-test3-vanillavc-com = {
+    create_record = false
+    endpoint_name = "api-test3-vanillavc-com"
+    record_name = "api-test3.vanillavc.com"
+    record_type = "CNAME"
+    dns_zone = null
+    dns_rg = null
+  }
+}
