@@ -78,12 +78,37 @@ frontend_endpoints = {
     dns_zone = null
     dns_rg = null
   }
-  api-test3-vanillavc-com = {
+  azurecdn-dsahoo-com = {
     create_record = false
-    endpoint_name = "api-test3-vanillavc-com"
-    record_name = "api-test3.vanillavc.com"
+    endpoint_name = "azurecdn-dsahoo-com"
+    record_name = "azurecdn.dsahoo.com"
+    record_type = "CNAME"
+    dns_zone = null
+    dns_rg = null
+  }
+  azurecdn2-dsahoo-com = {
+    create_record = false
+    endpoint_name = "azurecdn2-dsahoo-com"
+    record_name = "azurecdn2.dsahoo.com"
     record_type = "CNAME"
     dns_zone = null
     dns_rg = null
   }
 }
+
+custom_user_managed_certs = {
+    "azurecdn-dsahoo-com" = {
+      certificate_secret_name = "azurecdn-dsahoo-com"
+      certificate_secret_version = ""
+      https_enabled = true
+      key_vault_name = "deb-test-akv-000"
+      key_vault_rg = "deb-test-devops"
+    }
+    "azurecdn2-dsahoo-com" = {
+      certificate_secret_name = "azurecdn2-dsahoo-com"
+      certificate_secret_version = ""
+      https_enabled = true
+      key_vault_name = "deb-test-akv-000"
+      key_vault_rg = "deb-test-devops"
+    }
+  }

@@ -184,3 +184,19 @@ variable "backend_pool_settings" {
     enforce_backend_pools_certificate_name_check = false
   }
 }
+
+
+
+# Object ID for FrontDoor: e344ee3c-527c-43cd-aa22-1645ed7b0b95. Needs to be configured as Access Policy in key-vault
+variable "custom_user_managed_certs" {
+  description = "TLS configuration for custom frontend endpoints. Only supported certificate source is key-vault. The key should match the key of the variable 'frontend_endpoints'"
+  type = map(object({
+    https_enabled              = bool
+    key_vault_name             = string
+    key_vault_rg               = string
+    certificate_secret_name    = string
+    certificate_secret_version = string # Leave empty or null for 'Latest'
+  }))
+
+  default = {}
+}

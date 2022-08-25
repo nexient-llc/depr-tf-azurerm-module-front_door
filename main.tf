@@ -87,27 +87,6 @@ resource "azurerm_frontdoor" "front_door" {
     }
   }
 
-  # routing_rule {
-  #   name               = "exampleRoutingRule1"
-  #   accepted_protocols = ["Http", "Https"]
-  #   patterns_to_match  = ["/*"]
-  #   frontend_endpoints = [replace(var.front_door_name, "-fd-", "-fdep-")]
-  #   # One for each backend pool
-  #   dynamic "forwarding_configuration" {
-  #     for_each = var.forwarding_configurations
-  #     content {
-  #       backend_pool_name                     = forwarding_configuration.key
-  #       cache_duration                        = forwarding_configuration.value.cache_duration
-  #       cache_enabled                         = forwarding_configuration.value.cache_enabled
-  #       cache_query_parameter_strip_directive = forwarding_configuration.value.cache_query_parameter_strip_directive
-  #       cache_query_parameters                = forwarding_configuration.value.cache_query_parameters
-  #       cache_use_dynamic_compression         = forwarding_configuration.value.cache_use_dynamic_compression
-  #       custom_forwarding_path                = forwarding_configuration.value.custom_forwarding_path
-  #       forwarding_protocol                   = forwarding_configuration.value.forwarding_protocol
-  #     }
-  #   }
-  # }
-
   friendly_name         = var.friendly_name
   load_balancer_enabled = var.load_balancer_enabled
 
@@ -125,4 +104,31 @@ resource "azurerm_frontdoor" "front_door" {
   }
 
   tags = local.tags
+}
+
+data "azurerm_key_vault" "key_vault" {
+  for_each            = var.custom_user_managed_certs
+  name                = each.value.key_vault_name
+  resource_group_name = each.value.key_vault_rg
+}
+
+resource "azurerm_frontdoor_custom_https_configuration" "custom_https" {
+  for_each = var.custom_user_managed_certs
+
+  frontend_endpoint_id              = local.frontend_endpoints_map[each.key]
+  custom_https_provisioning_enabled = each.value.https_enabled
+
+  dynamic "custom_https_configuration" {
+    for_each = each.value.https_enabled ? [1] : []
+    content {
+      certificate_source                         = "AzureKeyVault"
+      azure_key_vault_certificate_secret_name    = each.value.certificate_secret_name
+      azure_key_vault_certificate_vault_id       = data.azurerm_key_vault.key_vault[each.key].id
+      azure_key_vault_certificate_secret_version = coalesce(each.value.certificate_secret_version, "notset") != "notset" ? each.value.certificate_secret_version : null
+    }
+  }
+
+  depends_on = [
+    azurerm_frontdoor.front_door
+  ]
 }

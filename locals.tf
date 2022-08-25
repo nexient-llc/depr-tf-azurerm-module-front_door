@@ -24,4 +24,6 @@ locals {
   routing_rules = merge({
     default-routing-rule = local.default_routing_rule
   }, var.additional_routing_rules)
+
+  frontend_endpoints_map = { for ep in azurerm_frontdoor.front_door.frontend_endpoint : ep.name => ep.id }
 }

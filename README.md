@@ -10,6 +10,11 @@ This module needs the following dependent modules
 - tf-azurerm-module-app_service (optionally to load balance multi-region app services)
 - tf-azurerm-module-dns_zones (to create cname records for custom domain)
 
+## Limitations and Considerations
+- Currently, only user imported certificates are supported for HTTPS of custom domains
+- Unlike CDN, Front-door doesn't error out  while performing `terraform destroy` if the attached DNS records to custom domains are not deleted ahead of time.
+- In order to retrieve the certificates from key-vault, user needs to add the Front-door `object-id` to the list of Access policies of the key-vault. Without so, the terraform would error out during `apply`. One could manually add the access policy in key-vault by searching for the principal `Microsoft.Azure.FrontDoor`. In order to add it automatically while creating the key-vault, one has to find the `object-id` of their provider's FrontDoor in the Active Directory.
+
 ## Pre-Commit hooks
 [.pre-commit-config.yaml](.pre-commit-config.yaml) file defines certain `pre-commit` hooks that are relevant to terraform, golang and common linting tasks. There are no custom hooks added.
 
