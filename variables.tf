@@ -129,7 +129,7 @@ variable "forwarding_configurations" {
 }
 
 variable "redirect_configurations" {
-  description = "Routing rules to redirect the traffic to the configured backend"
+  description = "Routing rules to redirect the traffic to the configured backend. This conflicts with 'forwarding_configurations'. Either one of these can exist for a routing rule"
   type = object({
     custom_host         = string
     redirect_protocol   = string # defaults to MatchRequest

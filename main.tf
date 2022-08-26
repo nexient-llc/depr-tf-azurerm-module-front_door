@@ -76,12 +76,12 @@ resource "azurerm_frontdoor" "front_door" {
       dynamic "redirect_configuration" {
         for_each = routing_rule.value.redirect_configuration != null ? [1] : []
         content {
-          custom_host         = lookup(routing_rule.value.redirect_configuration, "", "")
-          redirect_protocol   = lookup(routing_rule.value.redirect_configuration, "", "")
-          redirect_type       = lookup(routing_rule.value.redirect_configuration, "", "")
-          custom_fragment     = lookup(routing_rule.value.redirect_configuration, "", "")
-          custom_path         = lookup(routing_rule.value.redirect_configuration, "", "")
-          custom_query_string = lookup(routing_rule.value.redirect_configuration, "", "")
+          custom_host         = lookup(routing_rule.value.redirect_configuration, "custom_host", null)
+          redirect_protocol   = lookup(routing_rule.value.redirect_configuration, "redirect_protocol", "MatchRequest")
+          redirect_type       = lookup(routing_rule.value.redirect_configuration, "redirect_type", "")
+          custom_fragment     = lookup(routing_rule.value.redirect_configuration, "custom_fragment", null)
+          custom_path         = lookup(routing_rule.value.redirect_configuration, "custom_path", null)
+          custom_query_string = lookup(routing_rule.value.redirect_configuration, "custom_query_string", null)
         }
       }
     }
@@ -99,11 +99,15 @@ resource "azurerm_frontdoor" "front_door" {
     for_each = var.frontend_endpoints
     content {
       name      = frontend_endpoint.value.endpoint_name
-      host_name = frontend_endpoint.value.create_record ? "${frontend_endpoint.value.record_name}.${frontend_endpoint.value.zone_name}" : frontend_endpoint.value.record_name
+      host_name = frontend_endpoint.value.create_record ? "${frontend_endpoint.value.record_name}.${frontend_endpoint.value.dns_zone}" : frontend_endpoint.value.record_name
     }
   }
 
   tags = local.tags
+
+  depends_on = [
+    azurerm_dns_cname_record.cname_record
+  ]
 }
 
 data "azurerm_key_vault" "key_vault" {
@@ -112,6 +116,7 @@ data "azurerm_key_vault" "key_vault" {
   resource_group_name = each.value.key_vault_rg
 }
 
+# The endpoints must exist before configuring the https
 resource "azurerm_frontdoor_custom_https_configuration" "custom_https" {
   for_each = var.custom_user_managed_certs
 
@@ -131,4 +136,15 @@ resource "azurerm_frontdoor_custom_https_configuration" "custom_https" {
   depends_on = [
     azurerm_frontdoor.front_door
   ]
+}
+
+# Needs to be created before the frontend_endpoints are created
+resource "azurerm_dns_cname_record" "cname_record" {
+  for_each = local.create_cname_for_endpoints
+
+  name                = each.value.record_name
+  zone_name           = each.value.dns_zone
+  resource_group_name = each.value.dns_rg
+  ttl                 = 300
+  record              = "${var.front_door_name}.azurefd.net"
 }

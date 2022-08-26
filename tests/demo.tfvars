@@ -45,7 +45,9 @@ forwarding_configurations = {
   }
 }
 
-frontend_endpoint_names = ["demo-eus-dev-000-fdep-000"]
+accepted_protocols = ["Http", "Https"]
+
+frontend_endpoint_names = ["demo-eus-dev-000-fdep-000", "azurecdn-dsahoo-com", "api-test3-vanillavc-com"]
 
 additional_routing_rules = {
   "routing-rule-1" = {
@@ -70,13 +72,13 @@ additional_routing_rules = {
 }
 
 frontend_endpoints = {
-  api-test2-vanillavc-com = {
-    create_record = false
-    endpoint_name = "api-test2-vanillavc-com"
-    record_name = "api-test2.vanillavc.com"
+  api-test3-vanillavc-com = {
+    create_record = true
+    endpoint_name = "api-test3-vanillavc-com"
+    record_name = "api-test3"
     record_type = "CNAME"
-    dns_zone = null
-    dns_rg = null
+    dns_zone = "vanillavc.com"
+    dns_rg = "vanillavc-dns"
   }
   azurecdn-dsahoo-com = {
     create_record = false
