@@ -1,4 +1,4 @@
-front_door_name = "demo-eus-dev-000-fd-000"
+front_door_name = "demo-eus-dev-000-fd-003"
 
 resource_group = {
   name = "deb-test-devops"
@@ -9,9 +9,9 @@ backend_pools = {
   "dummy-backend-pool" = {
     backends = {
       backend-1 = {
-        address = "demo-eus-dev-000-app-000.azurewebsites.net"
+        address = "demo-eus-dev-000-app-003.azurewebsites.net"
         enabled = true
-        host_header = "demo-eus-dev-000-app-000.azurewebsites.net"
+        host_header = "demo-eus-dev-000-app-003.azurewebsites.net"
         http_port = 80
         https_port = 443
         priority = 1
@@ -47,70 +47,10 @@ forwarding_configurations = {
 
 accepted_protocols = ["Http", "Https"]
 
-frontend_endpoint_names = ["demo-eus-dev-000-fdep-000", "azurecdn-dsahoo-com", "api-test3-vanillavc-com"]
+frontend_endpoint_names = ["demo-eus-dev-000-fdep-003"]
 
-additional_routing_rules = {
-  "routing-rule-1" = {
-    accepted_protocols = [ "Http", "Https"]
-    enabled = false
-    forwarding_configuration = {
-      "dummy-backend-pool" = {
-        cache_duration = null
-        cache_enabled = false
-        cache_query_parameter_strip_directive = "StripAll"
-        cache_query_parameters = []
-        cache_use_dynamic_compression = false
-        custom_forwarding_path = ""
-        forwarding_protocol = "MatchRequest"
-      }
-    }
-    frontend_endpoint_names = ["demo-eus-dev-000-fdep-000"]
-    name = "routing-rule-1"
-    patterns_to_match = [ "/test" ]
-    redirect_configuration = null
-  }
-}
 
 frontend_endpoints = {
-  api-test3-vanillavc-com = {
-    create_record = true
-    endpoint_name = "api-test3-vanillavc-com"
-    record_name = "api-test3"
-    record_type = "CNAME"
-    dns_zone = "vanillavc.com"
-    dns_rg = "vanillavc-dns"
-  }
-  azurecdn-dsahoo-com = {
-    create_record = false
-    endpoint_name = "azurecdn-dsahoo-com"
-    record_name = "azurecdn.dsahoo.com"
-    record_type = "CNAME"
-    dns_zone = null
-    dns_rg = null
-  }
-  azurecdn2-dsahoo-com = {
-    create_record = false
-    endpoint_name = "azurecdn2-dsahoo-com"
-    record_name = "azurecdn2.dsahoo.com"
-    record_type = "CNAME"
-    dns_zone = null
-    dns_rg = null
-  }
+  
 }
 
-custom_user_managed_certs = {
-    "azurecdn-dsahoo-com" = {
-      certificate_secret_name = "azurecdn-dsahoo-com"
-      certificate_secret_version = ""
-      https_enabled = true
-      key_vault_name = "deb-test-akv-000"
-      key_vault_rg = "deb-test-devops"
-    }
-    "azurecdn2-dsahoo-com" = {
-      certificate_secret_name = "azurecdn2-dsahoo-com"
-      certificate_secret_version = ""
-      https_enabled = true
-      key_vault_name = "deb-test-akv-000"
-      key_vault_rg = "deb-test-devops"
-    }
-  }
