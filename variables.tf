@@ -1,3 +1,17 @@
+# Copyright 2022 Nexient LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 # Common Variables
 variable "resource_group" {
   description = "target resource group resource mask"
@@ -30,19 +44,12 @@ variable "load_balancer_enabled" {
   default     = true
 }
 
-variable "custom_tags" {
-  description = "Custom tags to be attached to the front-door"
-  type        = map(string)
-  default     = {}
-
-}
-
 variable "backend_pools" {
-  description = "A map of backend pools. Front-door supports a maximum of 50 pools. Each pool must have at least one backend (enabled). Each backend must have a health probe and a load balancing"
+  description = "A map of backend pools. Front-door supports a maximum of 50 pools. Each pool must have at least one backend (enabled). Each backend must have a health probe and a load balancing."
   type = map(object({
     backends = map(object({
       enabled     = bool
-      address     = string
+      address     = string # Address must be a valid DNS or IP Address
       host_header = string
       http_port   = number
       https_port  = number
@@ -63,8 +70,6 @@ variable "backend_pools" {
       additional_latency_ms       = number # defaults to 0
     })
   }))
-
-
 }
 
 # Front-end configuration for custom domains
@@ -91,7 +96,7 @@ variable "routing_rule_name" {
 }
 
 variable "frontend_endpoint_names" {
-  description = "A list of front-end endpoints for the Front-door. May be empty if no custom domain names attached. The default endpoint will be constructed in the locals file"
+  description = "A list of front-end endpoints for the Front-door. May be empty if no custom domain names attached. The default endpoint will be constructed in the locals file. The name must be a valid key in variable 'frontend_endpoints'"
   type        = list(string)
   default     = []
 }
@@ -199,4 +204,11 @@ variable "custom_user_managed_certs" {
   }))
 
   default = {}
+}
+
+variable "custom_tags" {
+  description = "Custom tags to be attached to the front-door"
+  type        = map(string)
+  default     = {}
+
 }
