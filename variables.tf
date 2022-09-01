@@ -25,7 +25,7 @@ variable "resource_group" {
   }
 }
 
-# Front Door related variables 
+# Front Door related variables
 
 variable "front_door_name" {
   description = "Name of the front-door"
