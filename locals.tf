@@ -41,5 +41,5 @@ locals {
 
   frontend_endpoints_map = { for ep in azurerm_frontdoor.front_door.frontend_endpoint : ep.name => ep.id }
 
-  create_cname_for_endpoints = { for key, ep in var.frontend_endpoints: key => ep if ep.create_record && lower(ep.record_type) == "cname" }
+  create_cname_for_endpoints = { for key, ep in var.frontend_endpoints : key => ep if ep.create_record && lower(ep.record_type) == "cname" }
 }
